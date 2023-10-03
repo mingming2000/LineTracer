@@ -11,6 +11,7 @@ using namespace std;	// MCP3008 example
 int main(){
 	
 	int pin = 2;
+	int pixel_values[128] = {0};
 	char value;
 
 	wiringPiSetupGpio();			// Setup the library
@@ -22,23 +23,27 @@ int main(){
 	int ret, ch = 0;
 	while (true){
 		digitalWrite(SI, HIGH);
-
-		for(ch = 1; ch <= 128; ++ch){
+		
+		for(ch = 0; ch < 128; ++ch){
 			
-			if(ch == 1){
+			if(ch == 0){
 				// printf("-------------------------\n");
 				// printf("One Cycle Start\n");
 				digitalWrite(SI, LOW);
 			}
 
 			if(ch == 127){
-				ch = 0;
 				sleep(1);
 				// printf("One Cycle Finish\n");
 				// printf("-------------------------\n");
+				for(int i = 0; i <128; ++i)
+					printf("%d ", pixel_values[i]);
+				printf("\n");
+				printf("\n");
 			}
 			ret = spi_getadc(&s, 0);
-			printf(">> %d___\r", ret);
+			pixel_values[ch] = ret;
+			// printf(">> %d___\r", ret);
 			// printf(">> %d/1023\r", ret);
 		}
 	}
