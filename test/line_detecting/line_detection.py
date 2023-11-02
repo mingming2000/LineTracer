@@ -32,7 +32,7 @@ def detect_lanes(frame: np.ndarray) -> np.ndarray:
 
     yellow_lane_frame = _detect_lane(hsv_blur_frame, (15, 55, 40), (66, 255, 160), 60)
     #white_lane_frame = _detect_lane(hsv_blur_frame, (0, 0, 80), (255, 50, 255), 100)
-    black_line_frame = _detect_lane(hsv_blur_frame, (0, 0, 0), (255, 255, 50), 60)
+    black_line_frame = _detect_lane(hsv_blur_frame, (0, 0, 0), (255, 255, 50), 80)
 
     return cv2.bitwise_or( yellow_lane_frame, black_line_frame )
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     window_name = 'Lane detection'
     cv2.namedWindow(window_name)
 
-    path = '0'
+    path = '/dev/video0'
     cap = cv2.VideoCapture(path)
 
     pre_lanes = [None, None]
