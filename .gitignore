@@ -1,2 +1,3 @@
 /test/CMakeLists.txt
 /test/build/
+/test/line_detecting/example_videos
