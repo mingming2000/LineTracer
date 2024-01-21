@@ -1,11 +1,11 @@
 import RPi.GPIO as GPIO
 import time
 
-RPWM = 18	# forward	Physical 12
-LPWM = 17	# reverse	Physical 11
-R_EN = 23	#                    16
-L_EN = 22	#					 15
-
+RPWM = 26	# forward	Physical 37
+LPWM = 21	# reverse	Physical 40
+R_EN = 19	#                    35
+L_EN = 20	#					 38
+	
 STOP = 0
 FORWARD = 1
 BACKWARD = 2
@@ -53,7 +53,7 @@ GPIO.setmode(GPIO.BCM)
 pwm_r, pwm_l = pin_init()
 
 print("forward for 10 seconds")
-setMotorControl(pwm_r, pwm_l, 20, FORWARD)
+setMotorControl(pwm_r, pwm_l, 40, FORWARD)
 # setMotorControl(pwm_r, pwm_l, 10, FORWARD)		# For Testing
 for i in range(10):
 	print(i+1)
@@ -63,14 +63,14 @@ setMotorControl(pwm_r, pwm_l, 0, STOP)
 time.sleep(0.5)
 
 print("\nbackward for 10 seconds")
-setMotorControl(pwm_r, pwm_l, 30, BACKWARD)
+setMotorControl(pwm_r, pwm_l, 60, BACKWARD)
 # setMotorControl(pwm_r, pwm_l, 10, BACKWARD)		# For Testing
 for i in range(10):
 	print(i+1)
 	time.sleep(1)
 
 print("\nstop for 10 seconds")
-setMotorControl(pwm_r, pwm_l, 40, STOP)
+setMotorControl(pwm_r, pwm_l, 60, STOP)
 for i in range(10):
 	print(i+1)
 	time.sleep(1)

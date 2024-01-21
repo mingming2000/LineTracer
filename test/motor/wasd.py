@@ -3,17 +3,18 @@ import pigpio
 import time
 # import keyboard
 
-servoPin = 12
-RPWM = 18	# forward
-LPWM = 17	# reverse
-R_EN = 23
-L_EN = 22
+servoPin = 17
+RPWM = 26	# forward	Physical 37
+LPWM = 21	# reverse	Physical 40
+R_EN = 19	#                    35
+L_EN = 20	#					 38
 
 STOP = 0
 FORWARD = 1
 BACKWARD = 2
 HIGH = 1
 LOW = 0
+
 
 def pin_init():
 	# pin initialization
@@ -44,12 +45,16 @@ GPIO.output(L_EN, HIGH)
 
 print("test starts")
 
+path = list()
+key = 'w'
 while True:
     #print("while")
+    last = key
     key = input()
-
+    
     if key == 'q':
     # if keyboard.is_pressed('q'):
+        servo.set_servo_pulsewidth(servoPin, 1600)
         print("q pressed")
         break
 
@@ -57,14 +62,14 @@ while True:
     if key == 'w':
     # if keyboard.is_pressed('w'):
         print("w pressed")
-        pwm_r.ChangeDutyCycle(30)
+        pwm_r.ChangeDutyCycle(80)
         pwm_l.ChangeDutyCycle(0)
         #dcControl(pwm_r, pwm_l, FORWARD, speed)
     elif key == 's':
     # elif keyboard.is_pressed('s'):
         print("s pressed")
         pwm_r.ChangeDutyCycle(0)
-        pwm_l.ChangeDutyCycle(30)
+        pwm_l.ChangeDutyCycle(50)
         #dcControl(pwm_r, pwm_l, BACKWARD, speed)
     else:
         pwm_r.ChangeDutyCycle(0)
@@ -76,9 +81,21 @@ while True:
     # if keyboard.is_pressed('a'):
         print("a pressed")
         servo.set_servo_pulsewidth(servoPin, 1300)
+        if(last == 'w'):
+            pwm_r.ChangeDutyCycle(20)
+            pwm_l.ChangeDutyCycle(0)
+        elif(last == 's'):
+            pwm_l.ChangeDutyCycle(20)
+            pwm_r.ChangeDutyCycle(0)
     elif key == 'd':
         print("d pressed")
         servo.set_servo_pulsewidth(servoPin, 1900)
+        if(last == 'w'):
+            pwm_r.ChangeDutyCycle(20)
+            pwm_l.ChangeDutyCycle(0)
+        elif(last == 's'):
+            pwm_r.ChangeDutyCycle(0)
+            pwm_l.ChangeDutyCycle(20)
     else:
         servo.set_servo_pulsewidth(servoPin, 1600)
     time.sleep(0.03)

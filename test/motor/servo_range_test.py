@@ -4,9 +4,9 @@ import time
 import keyboard
 import numpy as np
 
-servoPin = 12
+servoPin = 17
 GPIO.setmode(GPIO.BCM)
-#GPIO.setup(servoPin, GPIO.OUT)
+GPIO.setup(servoPin, GPIO.OUT)
 servo = pigpio.pi('pi123')
 servo.set_mode(servoPin, pigpio.OUTPUT)
 servo.set_PWM_frequency(servoPin, 50)
@@ -15,7 +15,7 @@ servo.set_PWM_frequency(servoPin, 50)
 
 value = 0
 try: 
-    for value in np.arange(1200, 2000, 100):
+    for value in np.arange(1300, 1900, 100):
         print(f'value: {value}')
         servo.set_servo_pulsewidth(servoPin, value) # 1600 center
         time.sleep(1)
