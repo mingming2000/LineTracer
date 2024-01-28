@@ -1,5 +1,5 @@
 import time
-from multi_tasks import Task
+from multitasking import Task
 
 
 def test_func(a: int, b: int):
@@ -17,36 +17,31 @@ class TestObject:
 
 
 if __name__ == "__main__":
-    task = Task(task=test_func, name=None, timeout=None)
-    task.start()
-
-    _stime = time.perf_counter()
-    out = task.sync_(1, 2)
-    _etime = time.perf_counter()
-    print(f"[SYNC] {out}, {_etime-_stime:.3f} (sec)")
-
-    _stime = time.perf_counter()
-    task.async_(1, 2)
-    out = task.wait_()
-    _etime = time.perf_counter()
-    print(f"[SYNC] {out}, {_etime-_stime:.3f} (sec)")
-
-    task.join()
-
-
     test_object = TestObject()
-    task = Task(task=test_object.test_func, name=None, timeout=None)
-    task.start()
+
+    task0 = Task(task=test_func)
+    task1 = Task(task=test_object.test_func)
+
+    # Test
+    _stime = time.perf_counter()
+    out = task0.sync_(1, 2)
+    _etime = time.perf_counter()
+    print(f"[SYNC] {out}, {_etime-_stime:.3f} (sec)")
 
     _stime = time.perf_counter()
-    out = task.sync_(3,)
+    out = task1.sync_(3,)
     _etime = time.perf_counter()
-    print(f"[ASYNC] {out}, {_etime-_stime:.3f} (sec)")
+    print(f"[SYNC] {out}, {_etime-_stime:.3f} (sec)")
 
     _stime = time.perf_counter()
-    task.async_(4,)
-    out = task.wait_()
+    task0.async_(1, 2)
+    task1.async_(4,)
+    out0 = task0.wait_()
+    out1 = task1.wait_()
     _etime = time.perf_counter()
-    print(f"[ASYNC] {out}, {_etime-_stime:.3f} (sec)")
+    print(f"[ASYNC] {out0}, {out1}, {_etime-_stime:.3f} (sec)")
 
-    task.join()
+    # Join!
+    task0.join()
+    task1.join()
+

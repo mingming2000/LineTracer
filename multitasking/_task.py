@@ -8,9 +8,8 @@ class Task(mp.Process):
         A multiprocessing framework.
         ---
         Example::
-            >>> from multi_task import Task
-            >>> task = Task(task=<Function>, name=None, timeout=None)
-            >>> task.start()
+            >>> from multitasking import Task
+            >>> task = Task(task=<Function>)
             >>> out = task.sync_(1, 2)
             >>> task.async_(1, 2)
             >>> # To do other works
@@ -30,35 +29,28 @@ class Task(mp.Process):
             while True:
                 if host_msg.get():
                     break
-                args = input_args.get(timeout=self._timeout)
-                output_args.put(
-                    func(self._task, args), 
-                    timeout=self._timeout
-                )
+                args = input_args.get()
+                out = func(self._task, args)
+                output_args.put(out)
         return _decorated
 
     @_loop
     def _execute_task(task: Callable, args: List[Any]):
         return task(*args)
 
-    def __init__(
-        self, 
-        name: str | None = None, 
-        task: Callable[..., object] | None = None, 
-        timeout: int | float | None = None,
-    ) -> None:
+    def __init__(self, task: Callable, additional_idx: int = 0) -> None:
         self._task = task
-        self._timeout = timeout
         self._host_msg = mp.Queue()
         self._input_args = mp.Queue()
         self._output_args = mp.Queue()
-        _name = name if name is not None else task.__name__
+        tname = f"{task.__name__}_{additional_idx}"
         super().__init__(
-            name=_name,
+            name=tname,
             target=self._execute_task, 
             args=(self._host_msg, self._input_args, self._output_args,),
             daemon=True
         )
+        self.start()
 
     def sync_(self, *args: Any) -> Any:
         self._host_msg.put(False)

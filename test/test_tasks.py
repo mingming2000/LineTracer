@@ -1,5 +1,5 @@
 import time
-from multi_tasks import MultiTasks
+from multitasking import MultiTasking
 
 
 def test_func(a: int, b: int):
@@ -19,12 +19,11 @@ class TestObject:
 if __name__ == "__main__":
     test_object = TestObject()
 
-    multi_tasks = MultiTasks()
-    multi_tasks.register(task=test_func, name="0")
-    multi_tasks.register(task=test_func, name="1")
-    multi_tasks.register(task=test_object.test_func, name="2")
-
-    multi_tasks.start()
+    multi_tasks = MultiTasking.registers(
+        test_func, 
+        test_func, 
+        test_object.test_func
+    )
 
     _stime = time.perf_counter()
     out = multi_tasks(

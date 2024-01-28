@@ -1,8 +1,14 @@
 # Best Practice: Multiprocessing
+provided by *H.W. Park*
+> **NOTE**:   
+> This pseudo-code may no work well.
+> Furthermore, this pseudo-code is just my opinion and is not the perfect way to apply it to your project.   
+> If you have any questions, please feel free to contact me. I hope you finish your project well. :)
 
+## Pseudo-code
 1. `main.py`
 ```
-from multi_tasks import MultiTasks
+from multitasking import MultiTasking
 from setting.bluetooth import Bluetooth
 from setting.camera import Camera
 
@@ -11,9 +17,6 @@ import pigpio
 
 
 servoPin = 17
-servo = pigpio.pi()
-servo.set_mode(servoPin, pigpio.OUTPUT)
-servo.set_PWM_frequency(servoPin, 50)
 
 RPWM = 26	# forward	Physical 37
 LPWM = 21	# reverse	Physical 40
@@ -29,23 +32,29 @@ LOW = 0
 lamda1 = 0.7
 lamda2 = 1.3
 
-pwm_r = GPIO.PWM(RPWM, 100)
-pwm_l = GPIO.PWM(LPWM, 100)
-
 
 if __name__ == "__main__":
-    multi_tasks = MultiTasks()
+    # Initialization Servo Motor in Here!
+    servo = pigpio.pi()
+    servo.set_mode(servoPin, pigpio.OUTPUT)
+    servo.set_PWM_frequency(servoPin, 50)
+
+    # Initialization DC Motor in Here!
+    pwm_r = GPIO.PWM(RPWM, 100)
+    pwm_l = GPIO.PWM(LPWM, 100)
+
+    # Initialization MultiTasks and others in Here!
     camera = Camera()
     bluetooth = Bluetooth()
-
-    multi_tasks.register(camera.calculate_angle)
-    multi_tasks.register(bluetooth.calculate_distance)
-    multi_tasks.start()
+    multi_tasks = MultiTasking.registers(
+        camera.calculate_angle,
+        bluetooth.calculate_distance
+    ) # Spawn child processes!
 
     try:
         while True:
             # Measure angle and distance in parallel!
-            measured_angle, measured_distance = multi_tasks()
+            measured_angle, measured_distance = multi_tasks(None, None)
 
             # Control DC Motor!
             if(measured_distance > lamda2): # Forward
@@ -74,7 +83,7 @@ if __name__ == "__main__":
         servo.set_PWM_dutycycle(servoPin, 0)
         servo.set_PWM_frequency(servoPin, 0)
         servo.stop()
-    finally:
+    finally: # Terminate GPIO and Servo Pins Safety!
         multi_tasks.join()
         pwm_r.stop()
         pwm_l.stop()
@@ -86,6 +95,7 @@ if __name__ == "__main__":
 
 2. `camera.py`
 ```
+# Refer to `test/shopping_cart/setting/camera.py`
 import cv2
 import numpy as np
 
@@ -204,4 +214,7 @@ class Bluetooth:
         loop.run_until_complete(self.calculate_dist())
         return self.distance
 ```
+
+## Workflow
+![image](./overview.png)
 
