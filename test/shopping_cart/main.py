@@ -1,5 +1,5 @@
 import multiprocessing as mp
-from setting import degree
+from setting import degree # 서보모터
 from setting import distance
 from setting import bluetooth
 from setting import camera
@@ -10,31 +10,43 @@ from setting import camera
 state = 'off'
 manager = mp.Manager()
 return_dict = manager.dict()
+dist_queue = mp.Queue()
+degree_queue = mp.Queue()
+
+
 
 procs = [
     # receive distance info.
     mp.Process(
-        target=bluetooth.calculate_distance, 
-        args=(),
-        daemon=True),
+        target=bluetooth.calculate_distance,
+        name="receive distance info.",
+        args=(dist_queue,),
+        daemon=True
+    ),
 
     #  Detect user by using camera
     mp.Process(
         target=camera.calculate_degree,
-        args=(),
-        daemon=True),
+        name="Detect user by using camera",
+        args=(degree_queue,),
+        daemon=True
+    ),
 
     # Manipulate motor
     mp.Process(
         target=distance.keep_distance, 
-        args=(return_dict),
-        daemon=True),
+        name="Manipulate motor",
+        args=(dist_queue,),
+        daemon=True
+    ),
 
     # Manipulate servo-motor
     mp.Process(
         target=degree.keep_degree,
-        args=(return_dict),
-        daemon=True)
+        name="Manipulate servo-motor",
+        args=(degree_queue,),
+        daemon=True
+    ),
 ]
 
 
@@ -52,10 +64,10 @@ user_instruction = input(key_info)
 if(user_instruction == 's'):
     state = 'on'
 
-    bluetooth_ready, initial_distance = distance.initializing()
-    user_ready = bluetooth.initializing()
-
-    object_distance = initial_distance
+    # initial_distance= distance.initializing()
+    bluetooth_ready= bluetooth.initializing()
+    # user_ready = camera.initializing()
+    degree.initializing()
 
 
 
@@ -64,7 +76,7 @@ if(user_instruction == 's'):
     """
         'Working' State
     """
-    if(bluetooth_ready == 'True' and user_ready == 'True'):
+    if(bluetooth_ready == True):
         state = 'working'
 
         for p in procs:
@@ -76,13 +88,13 @@ if(user_instruction == 's'):
 
 
 
-
             """
                 'Quit' State
             """
             user_instruction = input()
             if(user_instruction == 'q'):
                 state = 'quit'
+                distance.quit()
                 # complete the processes
                 for p in procs:
                     p.join()

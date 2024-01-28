@@ -15,7 +15,7 @@ def view_scope(frame: np.ndarray) -> np.ndarray:
 
 
 def detect_lanes(frame: np.ndarray) -> np.ndarray:
-    hsv_frame = cv2.cvtColor( frame.copy(), cv2.COLOR_BGR2HSV )
+    hsv_frame = cv2.cvtColor( frame.copy(), cv2.COLOR_BGR2HSV)
     hsv_blur_frame = cv2.GaussianBlur( hsv_frame, (9,9), 1 )
 
     def _detect_lane(frame: np.ndarray, lower_color: Tuple[int], upper_color: Tuple[int], threshold: int) -> np.ndarray:
@@ -32,7 +32,7 @@ def detect_lanes(frame: np.ndarray) -> np.ndarray:
 
     yellow_lane_frame = _detect_lane(hsv_blur_frame, (15, 55, 40), (66, 255, 160), 60)
     #white_lane_frame = _detect_lane(hsv_blur_frame, (0, 0, 80), (255, 50, 255), 100)
-    black_line_frame = _detect_lane(hsv_blur_frame, (0, 0, 0), (255, 255, 50), 80)
+    black_line_frame = _detect_lane(hsv_blur_frame, (0, 0, 0), (255, 255, 50), 0)
 
     return cv2.bitwise_or( yellow_lane_frame, black_line_frame )
 

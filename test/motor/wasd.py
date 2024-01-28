@@ -62,14 +62,14 @@ while True:
     if key == 'w':
     # if keyboard.is_pressed('w'):
         print("w pressed")
-        pwm_r.ChangeDutyCycle(80)
+        pwm_r.ChangeDutyCycle(30)
         pwm_l.ChangeDutyCycle(0)
         #dcControl(pwm_r, pwm_l, FORWARD, speed)
     elif key == 's':
     # elif keyboard.is_pressed('s'):
         print("s pressed")
         pwm_r.ChangeDutyCycle(0)
-        pwm_l.ChangeDutyCycle(50)
+        pwm_l.ChangeDutyCycle(30)
         #dcControl(pwm_r, pwm_l, BACKWARD, speed)
     else:
         pwm_r.ChangeDutyCycle(0)
