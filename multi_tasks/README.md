@@ -1,5 +1,6 @@
 # MultiTasks: A High-level Multiprocessing Framework
-Provided by *H.W. Park*
+Provided by *H.W. Park*   
+> NOTE: If you have any problems, please feel free to contact me.
 
 ## How to Use
 1. `MultiTasks`
