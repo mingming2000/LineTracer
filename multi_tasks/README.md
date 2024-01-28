@@ -63,6 +63,6 @@ if __name__ == "__main__":
 ```
 
 
-## How to Apply
+## How to Apply: [Guideline](./guideline.md)
 ![image](./overview.png)
 
